@@ -1,24 +1,34 @@
-# Hindi Learning App
+# Hindi Grammar App
 
 ## Current State
-The app has an Alphabet page with three tabs: Vowels, Consonants, and Half (अर्ध). The Half tab shows each half consonant with its formation (full + virama = half) and example words. Users can hear pronunciation for examples but there is no direct side-by-side practice comparing half vs full form.
+New project. No existing code.
 
 ## Requested Changes (Diff)
 
 ### Add
-- A practice mode in the Half (अर्ध) tab that shows each full consonant paired with its half form side by side for direct comparison
-- Speak buttons on both the full and half form in each practice card so the user can hear and compare them directly
-- A visual "Full vs Half" practice grid that lets users tap through all pairs
+- Hindi grammar learning app with the following sections:
+  1. **Nouns (संज्ञा)** -- types (vyakti, sthan, vastu), gender (masculine/feminine), singular/plural with examples and audio pronunciation
+  2. **Pronouns (सर्वनाम)** -- personal, possessive, demonstrative pronouns with examples
+  3. **Verbs (क्रिया)** -- root verbs, tenses (present/past/future), conjugation with subject agreement
+  4. **Adjectives (विशेषण)** -- types, gender agreement with nouns, examples
+  5. **Tenses (काल)** -- Present (वर्तमान), Past (भूतकाल), Future (भविष्य) with sentence structures and examples
+  6. **Sentence Structure (वाक्य रचना)** -- SOV order, affirmative, negative, question sentences
+  7. **Matras & Vowel Signs (मात्राएं)** -- how matras change meaning, examples with and without matras
+  8. **Sandhi (संधि)** -- joining of words, common rules with examples
+- Each topic card shows: Hindi term, English translation, explanation, example sentences (Hindi + transliteration + English meaning), and a speaker button for audio
+- Quiz mode for each grammar topic: MCQ and fill-in-the-blank
+- Progress tracking per topic (lessons completed, quiz scores)
+- Search/filter to find grammar rules by keyword
 
 ### Modify
-- The HalfLetterGrid and HalfLetterCard components to show the full consonant with its own large display and speak button alongside the half form
-- The formation row to be more prominent — show full consonant, half consonant, and a clear label on each
+- None (new project)
 
 ### Remove
-- Nothing removed
+- None
 
 ## Implementation Plan
-1. Update `HalfLetterCard` in `AlphabetPage.tsx` to show the full consonant prominently with a speak button next to the half form (with its own speak button), so the user can clearly compare and practice both
-2. Show transliteration under both full and half forms
-3. Keep the existing example word and "More examples" toggle below
-4. Add a small "Practice" badge or label to distinguish the pair-comparison section from the examples
+1. Backend: store grammar topics, lessons, quiz questions with answers, and user progress
+2. Frontend: tabbed navigation for each grammar category, lesson cards with examples, audio via Web Speech API, quiz component, progress dashboard
+3. Audio pronunciation using browser's SpeechSynthesis API with Hindi (hi-IN) voice
+4. Quiz engine: MCQ with 4 options and fill-in-the-blank with answer checking
+5. Progress stored per topic in backend

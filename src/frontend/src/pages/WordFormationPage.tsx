@@ -1,9 +1,17 @@
+import { ArrowRight, BookOpen, Volume2 } from "lucide-react";
 import { useState } from "react";
-import { Volume2, ArrowRight, BookOpen } from "lucide-react";
-import { CONSONANTS, MATRAS, WORD_EXAMPLES, type WordExample } from "../constants/hindi";
+import {
+  CONSONANTS,
+  MATRAS,
+  WORD_EXAMPLES,
+  type WordExample,
+} from "../constants/hindi";
 import { usePronounce } from "../hooks/usePronounce";
 
-function SpeakButton({ text, size = "md" }: { text: string; size?: "sm" | "md" | "lg" }) {
+function SpeakButton({
+  text,
+  size = "md",
+}: { text: string; size?: "sm" | "md" | "lg" }) {
   const { speak } = usePronounce();
   const [active, setActive] = useState(false);
 
@@ -31,9 +39,10 @@ function SpeakButton({ text, size = "md" }: { text: string; size?: "sm" | "md" |
       type="button"
       onClick={handleClick}
       className={`${sizeClasses[size]} rounded-full flex items-center justify-center transition-all
-        ${active
-          ? "bg-primary text-primary-foreground scale-110"
-          : "bg-primary/10 text-primary hover:bg-primary/20"
+        ${
+          active
+            ? "bg-primary text-primary-foreground scale-110"
+            : "bg-primary/10 text-primary hover:bg-primary/20"
         }`}
       aria-label={`Pronounce ${text}`}
     >
@@ -59,20 +68,30 @@ function MatraExample({
   return (
     <div className="flex items-center gap-2 bg-muted/40 rounded-xl p-3">
       <div className="flex flex-col items-center min-w-[36px]">
-        <span className="font-devanagari text-2xl font-bold text-primary leading-none">{consonant}</span>
-        <span className="text-[9px] text-muted-foreground mt-0.5">consonant</span>
+        <span className="font-devanagari text-2xl font-bold text-primary leading-none">
+          {consonant}
+        </span>
+        <span className="text-[9px] text-muted-foreground mt-0.5">
+          consonant
+        </span>
       </div>
       <span className="text-muted-foreground text-lg font-light">+</span>
       <div className="flex flex-col items-center min-w-[36px]">
         <span className="font-devanagari text-2xl font-bold text-accent leading-none">
           {matra || "—"}
         </span>
-        <span className="text-[9px] text-muted-foreground mt-0.5">{matraLabel}</span>
+        <span className="text-[9px] text-muted-foreground mt-0.5">
+          {matraLabel}
+        </span>
       </div>
       <ArrowRight className="w-4 h-4 text-muted-foreground/60 shrink-0" />
       <div className="flex flex-col items-center min-w-[44px]">
-        <span className="font-devanagari text-2xl font-bold text-foreground leading-none">{result}</span>
-        <span className="text-[9px] text-muted-foreground mt-0.5">{description}</span>
+        <span className="font-devanagari text-2xl font-bold text-foreground leading-none">
+          {result}
+        </span>
+        <span className="text-[9px] text-muted-foreground mt-0.5">
+          {description}
+        </span>
       </div>
       <div className="ml-auto">
         <SpeakButton text={result} size="sm" />
@@ -84,11 +103,15 @@ function MatraExample({
 // Word example card with color-coded parts
 function WordCard({ example }: { example: WordExample }) {
   return (
-    <div className="bg-card border border-border rounded-2xl p-4 shadow-xs
-      hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200">
+    <div
+      className="bg-card border border-border rounded-2xl p-4 shadow-xs
+      hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200"
+    >
       {/* Word + speak */}
       <div className="flex items-center justify-between mb-3">
-        <span className="font-devanagari text-3xl font-bold text-foreground">{example.word}</span>
+        <span className="font-devanagari text-3xl font-bold text-foreground">
+          {example.word}
+        </span>
         <SpeakButton text={example.word} size="md" />
       </div>
 
@@ -98,11 +121,12 @@ function WordCard({ example }: { example: WordExample }) {
           <span
             key={`${part.char}-${i}`}
             className={`font-devanagari text-base font-semibold px-1.5 py-0.5 rounded-md
-              ${part.role === "consonant"
-                ? "bg-primary/12 text-primary"
-                : part.role === "matra"
-                  ? "bg-accent/15 text-accent"
-                  : "bg-secondary/40 text-foreground"
+              ${
+                part.role === "consonant"
+                  ? "bg-primary/12 text-primary"
+                  : part.role === "matra"
+                    ? "bg-accent/15 text-accent"
+                    : "bg-secondary/40 text-foreground"
               }`}
           >
             {part.char}
@@ -112,7 +136,9 @@ function WordCard({ example }: { example: WordExample }) {
 
       {/* Transliteration + meaning */}
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-muted-foreground italic">{example.transliteration}</span>
+        <span className="text-sm font-medium text-muted-foreground italic">
+          {example.transliteration}
+        </span>
         <span className="text-sm font-semibold text-foreground bg-muted/60 px-2 py-0.5 rounded-lg">
           {example.meaning}
         </span>
@@ -123,13 +149,16 @@ function WordCard({ example }: { example: WordExample }) {
 
 export function WordFormationPage() {
   const { speak } = usePronounce();
-  const [selectedConsonant, setSelectedConsonant] = useState<string | null>(null);
+  const [selectedConsonant, setSelectedConsonant] = useState<string | null>(
+    null,
+  );
   const [selectedMatra, setSelectedMatra] = useState<string | null>(null);
 
   // Compute combined syllable
-  const combined = selectedConsonant && selectedMatra !== null
-    ? selectedConsonant + selectedMatra
-    : null;
+  const combined =
+    selectedConsonant && selectedMatra !== null
+      ? selectedConsonant + selectedMatra
+      : null;
 
   const handleConsonant = (c: string) => {
     setSelectedConsonant(c);
@@ -165,7 +194,6 @@ export function WordFormationPage() {
       </div>
 
       <div className="px-5 space-y-6">
-
         {/* === Section 1: How Matras Work === */}
         <section>
           <h2 className="font-display text-lg text-foreground mb-3 flex items-center gap-2">
@@ -173,8 +201,9 @@ export function WordFormationPage() {
             How Matras Work
           </h2>
           <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-            A matra (मात्रा) is a vowel diacritic written alongside a consonant. 
-            The consonant's inherent "a" sound changes based on the matra attached.
+            A matra (मात्रा) is a vowel diacritic written alongside a consonant.
+            The consonant's inherent "a" sound changes based on the matra
+            attached.
           </p>
           <div className="space-y-2">
             <MatraExample
@@ -225,8 +254,10 @@ export function WordFormationPage() {
           </p>
 
           {/* Combined result display */}
-          <div className="bg-gradient-to-br from-primary/8 to-accent/8 border border-primary/20
-            rounded-2xl p-5 mb-4 flex flex-col items-center gap-2">
+          <div
+            className="bg-gradient-to-br from-primary/8 to-accent/8 border border-primary/20
+            rounded-2xl p-5 mb-4 flex flex-col items-center gap-2"
+          >
             {combined ? (
               <>
                 <div className="flex items-center gap-3">
@@ -272,9 +303,10 @@ export function WordFormationPage() {
                   onClick={() => handleConsonant(c.char)}
                   className={`font-devanagari text-base font-semibold w-10 h-10 rounded-lg
                     border transition-all duration-150 active:scale-90
-                    ${selectedConsonant === c.char
-                      ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
-                      : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-primary/8"
+                    ${
+                      selectedConsonant === c.char
+                        ? "bg-primary text-primary-foreground border-primary shadow-md scale-105"
+                        : "bg-card text-foreground border-border hover:border-primary/50 hover:bg-primary/8"
                     }`}
                 >
                   {c.char}
@@ -296,9 +328,10 @@ export function WordFormationPage() {
                   onClick={() => handleMatra(m.matra)}
                   className={`font-devanagari text-base font-semibold min-w-[40px] h-10 px-2 rounded-lg
                     border transition-all duration-150 active:scale-90 flex flex-col items-center justify-center
-                    ${selectedMatra === m.matra
-                      ? "bg-accent text-accent-foreground border-accent shadow-md scale-105"
-                      : "bg-card text-foreground border-border hover:border-accent/50 hover:bg-accent/8"
+                    ${
+                      selectedMatra === m.matra
+                        ? "bg-accent text-accent-foreground border-accent shadow-md scale-105"
+                        : "bg-card text-foreground border-border hover:border-accent/50 hover:bg-accent/8"
                     }`}
                 >
                   <span className="leading-none text-sm">{m.vowel}</span>
@@ -325,7 +358,6 @@ export function WordFormationPage() {
             ))}
           </div>
         </section>
-
       </div>
     </div>
   );

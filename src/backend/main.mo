@@ -1,126 +1,120 @@
-import Time "mo:core/Time";
+import Map "mo:core/Map";
 import Array "mo:core/Array";
 import Text "mo:core/Text";
-import Int "mo:core/Int";
-import Float "mo:core/Float";
-import Map "mo:core/Map";
-import Iter "mo:core/Iter";
-import Order "mo:core/Order";
-import Runtime "mo:core/Runtime";
+import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
+import Iter "mo:core/Iter";
+import Runtime "mo:core/Runtime";
+import Migration "migration";
+import Order "mo:core/Order";
 
+(with migration = Migration.run)
 actor {
-  type QuizSession = {
-    correctAnswers : Nat;
-    totalQuestions : Nat;
+  type Lesson = {
+    title : Text;
+    content : Text;
+    transliteration : Text;
+    english : Text;
+  };
+
+  type QuizOption = {
+    text : Text;
+    isCorrect : Bool;
+  };
+
+  type QuizQuestion = {
+    question : Text;
+    options : [QuizOption];
+    answer : Text;
+    questionType : Text;
+    topic : Text;
+  };
+
+  type Topic = {
+    name : Text;
+    description : Text;
+    lessons : [Lesson];
+    quizzes : [QuizQuestion];
   };
 
   type UserProgress = {
-    learnedLetters : [Text];
-    quizScores : [QuizSession];
-    streak : Nat;
-    lastPracticeDay : Int;
+    completedLessons : Map.Map<Text, Nat>;
+    quizScores : Map.Map<Text, [Nat]>;
   };
 
-  module UserProgress {
-    public func compare(p1 : UserProgress, p2 : UserProgress) : Order.Order {
-      Nat.compare(p1.streak, p2.streak);
+  let topics = Map.empty<Text, Topic>();
+  let userProgress = Map.empty<Principal, UserProgress>();
+
+  public query ({ caller }) func getTopics() : async [Topic] {
+    topics.values().toArray();
+  };
+
+  public query ({ caller }) func getLessonsByTopic(topicName : Text) : async [Lesson] {
+    switch (topics.get(topicName)) {
+      case (null) { Runtime.trap("Topic not found") };
+      case (?topic) { topic.lessons };
     };
   };
 
-  let userProgressMap = Map.empty<Principal, UserProgress>();
+  public query ({ caller }) func getQuizzesByTopic(topicName : Text) : async [QuizQuestion] {
+    switch (topics.get(topicName)) {
+      case (null) { Runtime.trap("Topic not found") };
+      case (?topic) { topic.quizzes };
+    };
+  };
 
-  public shared ({ caller }) func markLetterLearned(letter : Text) : async () {
-    let progress = switch (userProgressMap.get(caller)) {
-      case (null) { { learnedLetters = [letter]; quizScores = []; streak = 0; lastPracticeDay = 0 } };
-      case (?existingProgress) {
-        let updatedLetters = Array.fromIter(
-          existingProgress.learnedLetters.values().concat([letter].values())
-        );
-        { existingProgress with learnedLetters = updatedLetters };
+  public shared ({ caller }) func submitQuizAnswers(topicName : Text, correctAnswers : Nat, totalQuestions : Nat) : async () {
+    let progress = switch (userProgress.get(caller)) {
+      case (null) {
+        let newScores = Map.empty<Text, [Nat]>();
+        newScores.add(topicName, [correctAnswers]);
+        { completedLessons = Map.empty<Text, Nat>(); quizScores = newScores };
       };
-    };
-    userProgressMap.add(caller, progress);
-  };
-
-  public shared ({ caller }) func recordQuizScore(correct : Nat, total : Nat) : async () {
-    switch (userProgressMap.get(caller)) {
-      case (null) { Runtime.trap("User has no existing progress") };
-      case (?progress) {
-        let newSession = { correctAnswers = correct; totalQuestions = total };
-        let updatedScores = Array.fromIter(
-          progress.quizScores.values().concat([newSession].values())
-        );
-        userProgressMap.add(caller, { progress with quizScores = updatedScores });
-      };
-    };
-  };
-
-  public shared ({ caller }) func updateStreak() : async () {
-    let today = Int.abs(Time.now() / 86_400_000_000_000);
-    let progress = switch (userProgressMap.get(caller)) {
-      case (null) { { learnedLetters = []; quizScores = []; streak = 1; lastPracticeDay = today } };
-      case (?existingProgress) {
-        if (existingProgress.lastPracticeDay == today) {
-          existingProgress;
-        } else if (existingProgress.lastPracticeDay == (today - 1)) {
-          { existingProgress with streak = existingProgress.streak + 1; lastPracticeDay = today };
-        } else {
-          { existingProgress with streak = 1; lastPracticeDay = today };
+      case (?existing) {
+        let existingScores = existing.quizScores.get(topicName);
+        let scoresArray = switch (existingScores) {
+          case (null) { [correctAnswers] };
+          case (?scores) { scores.concat([correctAnswers]) };
         };
+        existing.quizScores.add(topicName, scoresArray);
+        existing;
       };
     };
-    userProgressMap.add(caller, progress);
+    userProgress.add(caller, progress);
   };
 
-  public query ({ caller }) func getProgressSummary() : async {
-    totalLettersLearned : Nat;
-    averageQuizScore : Float;
-    streak : Nat;
+  public shared ({ caller }) func markLessonCompleted(topicName : Text, lessonIndex : Nat) : async () {
+    let progress = switch (userProgress.get(caller)) {
+      case (null) {
+        let newLessons = Map.empty<Text, Nat>();
+        newLessons.add(topicName, lessonIndex);
+        { completedLessons = newLessons; quizScores = Map.empty<Text, [Nat]>() };
+      };
+      case (?existing) {
+        let currentLesson = switch (existing.completedLessons.get(topicName)) {
+          case (null) { lessonIndex };
+          case (?existingIndex) { existingIndex + 1 };
+        };
+        existing.completedLessons.add(topicName, currentLesson);
+        existing;
+      };
+    };
+    userProgress.add(caller, progress);
+  };
+
+  public query ({ caller }) func getUserProgress() : async {
+    completedLessons : [(Text, Nat)];
+    quizScores : [(Text, [Nat])];
   } {
-    switch (userProgressMap.get(caller)) {
-      case (null) { Runtime.trap("User has no progress") };
+    switch (userProgress.get(caller)) {
+      case (null) { Runtime.trap("User progress not found") };
       case (?progress) {
-        let totalQuestions = progress.quizScores.foldLeft(0, func(acc, s) { acc + s.totalQuestions });
-        let totalCorrect = progress.quizScores.foldLeft(0, func(acc, s) { acc + s.correctAnswers });
-
-        let avgScore = if (totalQuestions == 0) { 0.0 } else {
-          totalCorrect.toFloat() / totalQuestions.toFloat();
-        };
-
         {
-          totalLettersLearned = progress.learnedLetters.size();
-          averageQuizScore = avgScore;
-          streak = progress.streak;
+          completedLessons = progress.completedLessons.toArray();
+          quizScores = progress.quizScores.toArray();
         };
       };
-    };
-  };
-
-  public shared ({ caller }) func resetProgress() : async () {
-    userProgressMap.remove(caller);
-  };
-
-  public query ({ caller }) func isLetterLearned(letter : Text) : async Bool {
-    switch (userProgressMap.get(caller)) {
-      case (null) { false };
-      case (?progress) {
-        progress.learnedLetters.any(func(l) { l == letter });
-      };
-    };
-  };
-
-  public query ({ caller }) func getAllLearnedLetters() : async [Text] {
-    switch (userProgressMap.get(caller)) {
-      case (null) { [] };
-      case (?progress) { progress.learnedLetters };
-    };
-  };
-
-  public query ({ caller }) func getStreak() : async Nat {
-    switch (userProgressMap.get(caller)) {
-      case (null) { 0 };
-      case (?progress) { progress.streak };
     };
   };
 };
+

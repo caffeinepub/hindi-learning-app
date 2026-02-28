@@ -89,135 +89,126 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface Topic {
+    name: string;
+    description: string;
+    lessons: Array<Lesson>;
+    quizzes: Array<QuizQuestion>;
+}
+export interface QuizOption {
+    text: string;
+    isCorrect: boolean;
+}
+export interface Lesson {
+    title: string;
+    content: string;
+    transliteration: string;
+    english: string;
+}
+export interface QuizQuestion {
+    topic: string;
+    question: string;
+    answer: string;
+    questionType: string;
+    options: Array<QuizOption>;
+}
 export interface backendInterface {
-    getAllLearnedLetters(): Promise<Array<string>>;
-    getProgressSummary(): Promise<{
-        streak: bigint;
-        averageQuizScore: number;
-        totalLettersLearned: bigint;
+    getLessonsByTopic(topicName: string): Promise<Array<Lesson>>;
+    getQuizzesByTopic(topicName: string): Promise<Array<QuizQuestion>>;
+    getTopics(): Promise<Array<Topic>>;
+    getUserProgress(): Promise<{
+        quizScores: Array<[string, Array<bigint>]>;
+        completedLessons: Array<[string, bigint]>;
     }>;
-    getStreak(): Promise<bigint>;
-    isLetterLearned(letter: string): Promise<boolean>;
-    markLetterLearned(letter: string): Promise<void>;
-    recordQuizScore(correct: bigint, total: bigint): Promise<void>;
-    resetProgress(): Promise<void>;
-    updateStreak(): Promise<void>;
+    markLessonCompleted(topicName: string, lessonIndex: bigint): Promise<void>;
+    submitQuizAnswers(topicName: string, correctAnswers: bigint, totalQuestions: bigint): Promise<void>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
-    async getAllLearnedLetters(): Promise<Array<string>> {
+    async getLessonsByTopic(arg0: string): Promise<Array<Lesson>> {
         if (this.processError) {
             try {
-                const result = await this.actor.getAllLearnedLetters();
+                const result = await this.actor.getLessonsByTopic(arg0);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getAllLearnedLetters();
+            const result = await this.actor.getLessonsByTopic(arg0);
             return result;
         }
     }
-    async getProgressSummary(): Promise<{
-        streak: bigint;
-        averageQuizScore: number;
-        totalLettersLearned: bigint;
+    async getQuizzesByTopic(arg0: string): Promise<Array<QuizQuestion>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getQuizzesByTopic(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getQuizzesByTopic(arg0);
+            return result;
+        }
+    }
+    async getTopics(): Promise<Array<Topic>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getTopics();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getTopics();
+            return result;
+        }
+    }
+    async getUserProgress(): Promise<{
+        quizScores: Array<[string, Array<bigint>]>;
+        completedLessons: Array<[string, bigint]>;
     }> {
         if (this.processError) {
             try {
-                const result = await this.actor.getProgressSummary();
+                const result = await this.actor.getUserProgress();
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getProgressSummary();
+            const result = await this.actor.getUserProgress();
             return result;
         }
     }
-    async getStreak(): Promise<bigint> {
+    async markLessonCompleted(arg0: string, arg1: bigint): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.getStreak();
+                const result = await this.actor.markLessonCompleted(arg0, arg1);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.getStreak();
+            const result = await this.actor.markLessonCompleted(arg0, arg1);
             return result;
         }
     }
-    async isLetterLearned(arg0: string): Promise<boolean> {
+    async submitQuizAnswers(arg0: string, arg1: bigint, arg2: bigint): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.isLetterLearned(arg0);
+                const result = await this.actor.submitQuizAnswers(arg0, arg1, arg2);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.isLetterLearned(arg0);
-            return result;
-        }
-    }
-    async markLetterLearned(arg0: string): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.markLetterLearned(arg0);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.markLetterLearned(arg0);
-            return result;
-        }
-    }
-    async recordQuizScore(arg0: bigint, arg1: bigint): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.recordQuizScore(arg0, arg1);
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.recordQuizScore(arg0, arg1);
-            return result;
-        }
-    }
-    async resetProgress(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.resetProgress();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.resetProgress();
-            return result;
-        }
-    }
-    async updateStreak(): Promise<void> {
-        if (this.processError) {
-            try {
-                const result = await this.actor.updateStreak();
-                return result;
-            } catch (e) {
-                this.processError(e);
-                throw new Error("unreachable");
-            }
-        } else {
-            const result = await this.actor.updateStreak();
+            const result = await this.actor.submitQuizAnswers(arg0, arg1, arg2);
             return result;
         }
     }

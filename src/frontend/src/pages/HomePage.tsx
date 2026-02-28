@@ -1,7 +1,16 @@
+import {
+  BarChart2,
+  BookMarked,
+  BookOpen,
+  Flame,
+  Heart,
+  Layers,
+  PenLine,
+  Star,
+} from "lucide-react";
 import { useEffect } from "react";
-import { BookOpen, Layers, PenLine, BarChart2, Flame, Star, BookMarked, Heart } from "lucide-react";
-import { useGetProgressSummary, useUpdateStreak } from "../hooks/useQueries";
 import { ALL_CHARACTERS } from "../constants/hindi";
+import { useGetProgressSummary, useUpdateStreak } from "../hooks/useQueries";
 
 interface HomePageProps {
   onNavigate: (tab: string) => void;
@@ -18,7 +27,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
   const totalChars = ALL_CHARACTERS.length;
   const learned = summary ? Number(summary.totalLettersLearned) : 0;
-  const progressPercent = totalChars > 0 ? Math.round((learned / totalChars) * 100) : 0;
+  const progressPercent =
+    totalChars > 0 ? Math.round((learned / totalChars) * 100) : 0;
   const streak = summary ? Number(summary.streak) : 0;
   const avgScore = summary ? Math.round(summary.averageQuizScore) : 0;
 
@@ -62,21 +72,32 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Hero header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-4 left-6 font-devanagari text-7xl opacity-40 select-none">अ</div>
-          <div className="absolute top-2 right-10 font-devanagari text-5xl opacity-30 select-none">क</div>
-          <div className="absolute bottom-4 left-1/3 font-devanagari text-6xl opacity-25 select-none">ह</div>
-          <div className="absolute top-1/2 right-4 font-devanagari text-4xl opacity-35 select-none">ज्ञ</div>
+          <div className="absolute top-4 left-6 font-devanagari text-7xl opacity-40 select-none">
+            अ
+          </div>
+          <div className="absolute top-2 right-10 font-devanagari text-5xl opacity-30 select-none">
+            क
+          </div>
+          <div className="absolute bottom-4 left-1/3 font-devanagari text-6xl opacity-25 select-none">
+            ह
+          </div>
+          <div className="absolute top-1/2 right-4 font-devanagari text-4xl opacity-35 select-none">
+            ज्ञ
+          </div>
         </div>
         <div className="relative px-5 pt-10 pb-8 animate-fade-in-up">
           <div className="flex items-center gap-2 mb-3">
             <BookMarked className="w-5 h-5 opacity-80" />
-            <span className="text-sm font-medium opacity-80 tracking-wide uppercase">Hindi Learning</span>
+            <span className="text-sm font-medium opacity-80 tracking-wide uppercase">
+              Hindi Learning
+            </span>
           </div>
           <h1 className="font-display text-3xl font-normal leading-tight mb-2">
             नमस्ते! <span className="italic">Welcome</span>
           </h1>
           <p className="text-sm opacity-75 leading-relaxed max-w-xs">
-            Learn to read and write Devanagari — the script of Hindi, Sanskrit, and more.
+            Learn to read and write Devanagari — the script of Hindi, Sanskrit,
+            and more.
           </p>
         </div>
       </div>
@@ -116,7 +137,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Alphabet Progress
             </span>
-            <span className="text-xs font-semibold text-primary">{progressPercent}%</span>
+            <span className="text-xs font-semibold text-primary">
+              {progressPercent}%
+            </span>
           </div>
           <div className="h-2.5 bg-muted rounded-full overflow-hidden">
             <div
@@ -131,7 +154,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
         {/* Quick actions */}
         <div className="mb-6 animate-fade-in-up stagger-3">
-          <h2 className="font-display text-lg text-foreground mb-3">Start Learning</h2>
+          <h2 className="font-display text-lg text-foreground mb-3">
+            Start Learning
+          </h2>
           <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action) => {
               const Icon = action.icon;
@@ -143,14 +168,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   className={`flex flex-col gap-2.5 p-4 rounded-xl border ${action.borderColor} bg-card text-left
                     hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200 active:scale-95`}
                 >
-                  <div className={`w-9 h-9 rounded-lg ${action.color} flex items-center justify-center`}>
+                  <div
+                    className={`w-9 h-9 rounded-lg ${action.color} flex items-center justify-center`}
+                  >
                     <Icon className="w-4.5 h-4.5" />
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-card-foreground leading-tight">
                       {action.label}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{action.sub}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {action.sub}
+                    </p>
                   </div>
                 </button>
               );
@@ -160,14 +189,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
         {/* Word of the day */}
         <div className="animate-fade-in-up stagger-4 mb-6">
-          <h2 className="font-display text-lg text-foreground mb-3">Word of the Day</h2>
+          <h2 className="font-display text-lg text-foreground mb-3">
+            Word of the Day
+          </h2>
           <div className="bg-gradient-to-br from-accent/15 to-secondary/30 border border-accent/20 rounded-2xl p-5">
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-devanagari text-5xl font-bold text-primary leading-none mb-2">
                   नमस्ते
                 </p>
-                <p className="text-sm font-medium text-foreground/80">namaste</p>
+                <p className="text-sm font-medium text-foreground/80">
+                  namaste
+                </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   hello · greeting · I bow to you
                 </p>
@@ -209,17 +242,30 @@ interface StatCardProps {
   bgClass: string;
 }
 
-function StatCard({ icon, label, value, sub, colorClass, bgClass }: StatCardProps) {
+function StatCard({
+  icon,
+  label,
+  value,
+  sub,
+  colorClass,
+  bgClass,
+}: StatCardProps) {
   return (
     <div className="bg-card rounded-xl p-3 border border-border shadow-xs flex flex-col gap-1.5">
-      <div className={`w-7 h-7 rounded-md ${bgClass} ${colorClass} flex items-center justify-center`}>
+      <div
+        className={`w-7 h-7 rounded-md ${bgClass} ${colorClass} flex items-center justify-center`}
+      >
         {icon}
       </div>
       <div>
-        <p className={`text-lg font-bold ${colorClass} leading-none`}>{value}</p>
+        <p className={`text-lg font-bold ${colorClass} leading-none`}>
+          {value}
+        </p>
         {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
       </div>
-      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</p>
+      <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+        {label}
+      </p>
     </div>
   );
 }

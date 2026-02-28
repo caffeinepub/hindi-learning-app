@@ -1,10 +1,16 @@
-import { useState, useCallback } from "react";
-import { RefreshCw, ThumbsUp, ThumbsDown, RotateCcw, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import {
+  RefreshCw,
+  RotateCcw,
+  ThumbsDown,
+  ThumbsUp,
+  Trophy,
+} from "lucide-react";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { ALL_CHARACTERS, type HindiCharacter } from "../constants/hindi";
 import { useRecordQuizScore } from "../hooks/useQueries";
-import { toast } from "sonner";
-import { Progress } from "@/components/ui/progress";
 
 const QUIZ_SIZE = 10;
 
@@ -62,7 +68,7 @@ export function FlashcardsPage() {
           {
             onSuccess: () => toast.success("Score saved!"),
             onError: () => toast.error("Could not save score."),
-          }
+          },
         );
       } else {
         setScore(newScore);
@@ -70,7 +76,7 @@ export function FlashcardsPage() {
         setIsFlipped(false);
       }
     },
-    [score, currentIndex, recordScore]
+    [score, currentIndex, recordScore],
   );
 
   const handleRestart = useCallback(() => {
@@ -83,8 +89,10 @@ export function FlashcardsPage() {
 
   if (quizState === "complete") {
     const pct = Math.round((score / QUIZ_SIZE) * 100);
-    const grade = pct >= 80 ? "Excellent!" : pct >= 60 ? "Good work!" : "Keep practicing!";
-    const gradeColor = pct >= 80 ? "text-success" : pct >= 60 ? "text-accent" : "text-primary";
+    const grade =
+      pct >= 80 ? "Excellent!" : pct >= 60 ? "Good work!" : "Keep practicing!";
+    const gradeColor =
+      pct >= 80 ? "text-success" : pct >= 60 ? "text-accent" : "text-primary";
 
     return (
       <div className="min-h-screen pb-24 flex flex-col items-center justify-center px-5">
@@ -93,10 +101,14 @@ export function FlashcardsPage() {
             <div className="w-20 h-20 bg-accent/15 rounded-full flex items-center justify-center mx-auto mb-5">
               <Trophy className="w-10 h-10 text-accent" />
             </div>
-            <h2 className="font-display text-2xl text-foreground mb-1">{grade}</h2>
+            <h2 className="font-display text-2xl text-foreground mb-1">
+              {grade}
+            </h2>
             <p className="text-sm text-muted-foreground mb-6">Quiz Complete</p>
 
-            <div className={`text-6xl font-bold font-display ${gradeColor} mb-2`}>
+            <div
+              className={`text-6xl font-bold font-display ${gradeColor} mb-2`}
+            >
               {score}/{QUIZ_SIZE}
             </div>
             <p className="text-sm text-muted-foreground mb-6">{pct}% correct</p>
@@ -155,8 +167,12 @@ export function FlashcardsPage() {
       <div className="px-5 mb-6">
         <Progress value={progressPercent} className="h-2" />
         <div className="flex justify-between mt-1.5">
-          <span className="text-xs text-success font-medium">✓ {score} correct</span>
-          <span className="text-xs text-muted-foreground">{QUIZ_SIZE - currentIndex} left</span>
+          <span className="text-xs text-success font-medium">
+            ✓ {score} correct
+          </span>
+          <span className="text-xs text-muted-foreground">
+            {QUIZ_SIZE - currentIndex} left
+          </span>
         </div>
       </div>
 
@@ -169,19 +185,25 @@ export function FlashcardsPage() {
             className="flashcard-container w-full cursor-pointer mb-4 bg-transparent p-0 border-0 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-3xl"
             style={{ height: "280px" }}
             onClick={handleFlip}
-            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") handleFlip(); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") handleFlip();
+            }}
             aria-label="Flip flashcard"
           >
             <div className={`flashcard-inner ${isFlipped ? "flipped" : ""}`}>
               {/* Front */}
-              <div className="flashcard-front bg-card rounded-3xl border-2 border-border shadow-card
-                flex flex-col items-center justify-center p-8 gap-4">
+              <div
+                className="flashcard-front bg-card rounded-3xl border-2 border-border shadow-card
+                flex flex-col items-center justify-center p-8 gap-4"
+              >
                 <div className="w-10 h-1.5 bg-muted rounded-full mb-2 opacity-40" />
                 <span
                   className={`
-                    ${frontIsDevanagari
-                      ? "font-devanagari text-7xl text-primary font-bold"
-                      : "text-3xl font-semibold text-foreground font-sans tracking-wide"}
+                    ${
+                      frontIsDevanagari
+                        ? "font-devanagari text-7xl text-primary font-bold"
+                        : "text-3xl font-semibold text-foreground font-sans tracking-wide"
+                    }
                     select-none leading-none
                   `}
                 >
@@ -199,15 +221,21 @@ export function FlashcardsPage() {
               </div>
 
               {/* Back */}
-              <div className="flashcard-back bg-gradient-to-br from-primary/10 to-accent/10
+              <div
+                className="flashcard-back bg-gradient-to-br from-primary/10 to-accent/10
                 rounded-3xl border-2 border-accent/30 shadow-card
-                flex flex-col items-center justify-center p-8 gap-4">
-                <span className="text-xs text-accent/80 tracking-widest uppercase mb-2">Answer</span>
+                flex flex-col items-center justify-center p-8 gap-4"
+              >
+                <span className="text-xs text-accent/80 tracking-widest uppercase mb-2">
+                  Answer
+                </span>
                 <span
                   className={`
-                    ${backIsDevanagari
-                      ? "font-devanagari text-7xl text-primary font-bold"
-                      : "text-3xl font-semibold text-foreground font-sans tracking-wide"}
+                    ${
+                      backIsDevanagari
+                        ? "font-devanagari text-7xl text-primary font-bold"
+                        : "text-3xl font-semibold text-foreground font-sans tracking-wide"
+                    }
                     select-none leading-none
                   `}
                 >
@@ -224,7 +252,9 @@ export function FlashcardsPage() {
           <div
             className={`transition-all duration-300 ${isFlipped ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}`}
           >
-            <p className="text-center text-xs text-muted-foreground mb-4">Did you get it right?</p>
+            <p className="text-center text-xs text-muted-foreground mb-4">
+              Did you get it right?
+            </p>
             <div className="grid grid-cols-2 gap-3">
               <button
                 type="button"

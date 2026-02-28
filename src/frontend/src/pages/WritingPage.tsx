@@ -1,6 +1,6 @@
-import { useRef, useEffect, useState, useCallback } from "react";
-import { Trash2, ChevronLeft, ChevronRight, Shuffle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, Shuffle, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ALL_CHARACTERS, type HindiCharacter } from "../constants/hindi";
 
 function shuffle<T>(arr: T[]): T[] {
@@ -19,7 +19,9 @@ const CANVAS_STROKE_COLOR_DARK = "#f5e6d0";
 
 export function WritingPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [characters] = useState<HindiCharacter[]>(() => shuffle(ALL_CHARACTERS));
+  const [characters] = useState<HindiCharacter[]>(() =>
+    shuffle(ALL_CHARACTERS),
+  );
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasDrawn, setHasDrawn] = useState(false);
@@ -102,7 +104,9 @@ export function WritingPage() {
     setHasDrawn(false);
   }, [drawGuide]);
 
-  const getPos = (e: React.MouseEvent | React.TouchEvent): { x: number; y: number } | null => {
+  const getPos = (
+    e: React.MouseEvent | React.TouchEvent,
+  ): { x: number; y: number } | null => {
     const canvas = canvasRef.current;
     if (!canvas) return null;
     const rect = canvas.getBoundingClientRect();
@@ -183,7 +187,9 @@ export function WritingPage() {
     <div className="min-h-screen pb-24 flex flex-col">
       {/* Header */}
       <div className="px-5 pt-8 pb-4">
-        <h1 className="font-display text-2xl text-foreground mb-1">Writing Practice</h1>
+        <h1 className="font-display text-2xl text-foreground mb-1">
+          Writing Practice
+        </h1>
         <p className="text-sm text-muted-foreground">
           Trace the character on the canvas below
         </p>
@@ -197,7 +203,9 @@ export function WritingPage() {
               {currentChar.char}
             </span>
             <div>
-              <p className="text-lg font-semibold text-foreground">{currentChar.transliteration}</p>
+              <p className="text-lg font-semibold text-foreground">
+                {currentChar.transliteration}
+              </p>
               <p className="text-xs text-muted-foreground">
                 Character {currentIndex + 1} of {characters.length}
               </p>
@@ -237,14 +245,17 @@ export function WritingPage() {
       {/* Instructions */}
       <div className="px-5 mb-3">
         <p className="text-xs text-muted-foreground text-center bg-muted/40 rounded-lg py-2 px-3">
-          The faint character is your guide — draw on top to practice the stroke order
+          The faint character is your guide — draw on top to practice the stroke
+          order
         </p>
       </div>
 
       {/* Canvas area */}
       <div className="px-5 flex-1">
-        <div className="relative w-full rounded-2xl overflow-hidden border-2 border-border bg-card shadow-card"
-          style={{ aspectRatio: "1 / 1" }}>
+        <div
+          className="relative w-full rounded-2xl overflow-hidden border-2 border-border bg-card shadow-card"
+          style={{ aspectRatio: "1 / 1" }}
+        >
           <canvas
             ref={canvasRef}
             className="writing-canvas w-full h-full block"
@@ -252,8 +263,14 @@ export function WritingPage() {
             onMouseMove={draw}
             onMouseUp={stopDraw}
             onMouseLeave={stopDraw}
-            onTouchStart={(e) => { e.preventDefault(); startDraw(e); }}
-            onTouchMove={(e) => { e.preventDefault(); draw(e); }}
+            onTouchStart={(e) => {
+              e.preventDefault();
+              startDraw(e);
+            }}
+            onTouchMove={(e) => {
+              e.preventDefault();
+              draw(e);
+            }}
             onTouchEnd={stopDraw}
           />
           {!hasDrawn && (

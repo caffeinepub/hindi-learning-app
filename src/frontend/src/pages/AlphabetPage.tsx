@@ -1,10 +1,25 @@
-import { useState } from "react";
-import { Check, Volume2, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { VOWELS, CONSONANTS, HALF_CONSONANTS, type HindiCharacter, type HalfConsonant } from "../constants/hindi";
-import { useGetAllLearnedLetters, useMarkLetterLearned } from "../hooks/useQueries";
-import { usePronounce } from "../hooks/usePronounce";
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  Volume2,
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
+import {
+  CONSONANTS,
+  HALF_CONSONANTS,
+  type HalfConsonant,
+  type HindiCharacter,
+  VOWELS,
+} from "../constants/hindi";
+import { usePronounce } from "../hooks/usePronounce";
+import {
+  useGetAllLearnedLetters,
+  useMarkLetterLearned,
+} from "../hooks/useQueries";
 
 function SpeakButton({ text }: { text: string }) {
   const { speak } = usePronounce();
@@ -50,7 +65,8 @@ export function AlphabetPage() {
       <div className="px-5 pt-8 pb-4">
         <h1 className="font-display text-2xl text-foreground mb-1">Alphabet</h1>
         <p className="text-sm text-muted-foreground">
-          {learnedSet.size} of {VOWELS.length + CONSONANTS.length} characters learned
+          {learnedSet.size} of {VOWELS.length + CONSONANTS.length} characters
+          learned
         </p>
       </div>
 
@@ -112,7 +128,13 @@ interface CharGridProps {
   isPending: boolean;
 }
 
-function CharGrid({ characters, learnedSet, onMark, isLoading, isPending }: CharGridProps) {
+function CharGrid({
+  characters,
+  learnedSet,
+  onMark,
+  isLoading,
+  isPending,
+}: CharGridProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-3 gap-3">
@@ -150,7 +172,13 @@ interface CharCardProps {
   animIndex: number;
 }
 
-function CharCard({ item, isLearned, onMark, isPending, animIndex }: CharCardProps) {
+function CharCard({
+  item,
+  isLearned,
+  onMark,
+  isPending,
+  animIndex,
+}: CharCardProps) {
   const [pressed, setPressed] = useState(false);
   const [showExamples, setShowExamples] = useState(false);
   const delay = Math.min(animIndex * 0.03, 0.5);
@@ -162,9 +190,10 @@ function CharCard({ item, isLearned, onMark, isPending, animIndex }: CharCardPro
         relative rounded-2xl border-2 p-3 flex flex-col items-center gap-1.5 overflow-hidden
         transition-all duration-300
         animate-scale-in
-        ${isLearned
-          ? "border-success/40 bg-success/8 shadow-xs"
-          : "border-border bg-card shadow-xs hover:shadow-card-hover hover:-translate-y-0.5"
+        ${
+          isLearned
+            ? "border-success/40 bg-success/8 shadow-xs"
+            : "border-border bg-card shadow-xs hover:shadow-card-hover hover:-translate-y-0.5"
         }
       `}
       style={{ animationDelay: `${delay}s`, animationFillMode: "both" }}
@@ -189,8 +218,10 @@ function CharCard({ item, isLearned, onMark, isPending, animIndex }: CharCardPro
       </span>
 
       {/* Transliteration */}
-      <span className={`text-xs font-medium tracking-wide
-        ${isLearned ? "text-success/70" : "text-muted-foreground"}`}>
+      <span
+        className={`text-xs font-medium tracking-wide
+        ${isLearned ? "text-success/70" : "text-muted-foreground"}`}
+      >
         {item.transliteration}
       </span>
 
@@ -214,8 +245,10 @@ function CharCard({ item, isLearned, onMark, isPending, animIndex }: CharCardPro
       )}
 
       {isLearned && (
-        <span className="mt-1 w-full h-7 rounded-lg text-xs font-semibold text-center leading-7
-          text-success/80 bg-success/10 border border-success/20">
+        <span
+          className="mt-1 w-full h-7 rounded-lg text-xs font-semibold text-center leading-7
+          text-success/80 bg-success/10 border border-success/20"
+        >
           Learned ✓
         </span>
       )}
@@ -229,7 +262,11 @@ function CharCard({ item, isLearned, onMark, isPending, animIndex }: CharCardPro
             text-muted-foreground hover:text-primary transition-colors mt-0.5 py-0.5"
         >
           Examples
-          {showExamples ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
+          {showExamples ? (
+            <ChevronUp className="w-2.5 h-2.5" />
+          ) : (
+            <ChevronDown className="w-2.5 h-2.5" />
+          )}
         </button>
       )}
 
@@ -237,7 +274,10 @@ function CharCard({ item, isLearned, onMark, isPending, animIndex }: CharCardPro
       {hasExamples && showExamples && (
         <div className="w-full border-t border-border/50 pt-2 space-y-1.5">
           {item.examples!.map((ex) => (
-            <div key={ex.word} className="flex items-center justify-between gap-1">
+            <div
+              key={ex.word}
+              className="flex items-center justify-between gap-1"
+            >
               <div className="flex-1 min-w-0">
                 <span className="font-devanagari text-sm font-semibold text-foreground block leading-tight truncate">
                   {ex.word}
@@ -274,10 +314,13 @@ function HalfLetterGrid({ isLoading }: HalfLetterGridProps) {
     <div className="space-y-4">
       {/* Explainer */}
       <div className="bg-accent/8 border border-accent/20 rounded-xl p-4">
-        <p className="text-sm text-foreground font-medium mb-1">What are half letters?</p>
+        <p className="text-sm text-foreground font-medium mb-1">
+          What are half letters?
+        </p>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          When two consonants join, the first loses its vowel sound and becomes a "half letter" (अर्ध अक्षर). 
-          The virama sign (्) removes the inherent vowel.
+          When two consonants join, the first loses its vowel sound and becomes
+          a "half letter" (अर्ध अक्षर). The virama sign (्) removes the inherent
+          vowel.
         </p>
       </div>
 
@@ -322,8 +365,12 @@ function HalfLetterCard({ item, animIndex }: HalfLetterCardProps) {
             {item.full}
           </span>
           <div className="flex flex-col items-center gap-0.5">
-            <span className="text-[10px] font-semibold text-primary/80 uppercase tracking-wider">Full</span>
-            <span className="text-[9px] text-muted-foreground font-mono">{fullTranslit}</span>
+            <span className="text-[10px] font-semibold text-primary/80 uppercase tracking-wider">
+              Full
+            </span>
+            <span className="text-[9px] text-muted-foreground font-mono">
+              {fullTranslit}
+            </span>
           </div>
         </div>
 
@@ -336,27 +383,43 @@ function HalfLetterCard({ item, animIndex }: HalfLetterCardProps) {
             {item.half}
           </span>
           <div className="flex flex-col items-center gap-0.5">
-            <span className="text-[10px] font-semibold text-accent/80 uppercase tracking-wider">Half</span>
-            <span className="text-[9px] text-muted-foreground font-mono">{halfTranslit}</span>
+            <span className="text-[10px] font-semibold text-accent/80 uppercase tracking-wider">
+              Half
+            </span>
+            <span className="text-[9px] text-muted-foreground font-mono">
+              {halfTranslit}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Virama formula — small info line */}
       <div className="flex items-center justify-center gap-1 bg-muted/40 rounded-lg py-1 px-2">
-        <span className="font-devanagari text-sm text-primary font-semibold">{item.full}</span>
+        <span className="font-devanagari text-sm text-primary font-semibold">
+          {item.full}
+        </span>
         <span className="text-muted-foreground/50 text-[10px]">+</span>
-        <span className="font-devanagari text-sm text-accent font-semibold">्</span>
+        <span className="font-devanagari text-sm text-accent font-semibold">
+          ्
+        </span>
         <ArrowRight className="w-2.5 h-2.5 text-muted-foreground/50 shrink-0" />
-        <span className="font-devanagari text-sm text-foreground font-semibold">{item.half}</span>
-        <span className="text-[9px] text-muted-foreground ml-0.5">(virama)</span>
+        <span className="font-devanagari text-sm text-foreground font-semibold">
+          {item.half}
+        </span>
+        <span className="text-[9px] text-muted-foreground ml-0.5">
+          (virama)
+        </span>
       </div>
 
       {/* Example word */}
       <div className="flex items-center justify-between px-0.5">
         <div>
-          <p className="font-devanagari text-base font-semibold text-foreground leading-none">{item.example}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">{item.exampleMeaning}</p>
+          <p className="font-devanagari text-base font-semibold text-foreground leading-none">
+            {item.example}
+          </p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">
+            {item.exampleMeaning}
+          </p>
         </div>
         <SpeakButton text={item.example} />
       </div>
@@ -370,7 +433,11 @@ function HalfLetterCard({ item, animIndex }: HalfLetterCardProps) {
             text-muted-foreground hover:text-primary transition-colors px-0.5"
         >
           More examples
-          {showMore ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
+          {showMore ? (
+            <ChevronUp className="w-2.5 h-2.5" />
+          ) : (
+            <ChevronDown className="w-2.5 h-2.5" />
+          )}
         </button>
       )}
 
@@ -378,7 +445,10 @@ function HalfLetterCard({ item, animIndex }: HalfLetterCardProps) {
       {hasMore && showMore && (
         <div className="border-t border-border/50 pt-2 space-y-1.5 px-0.5">
           {item.examples!.map((ex) => (
-            <div key={ex.word} className="flex items-center justify-between gap-1">
+            <div
+              key={ex.word}
+              className="flex items-center justify-between gap-1"
+            >
               <div className="flex-1 min-w-0">
                 <span className="font-devanagari text-sm font-semibold text-foreground leading-tight block truncate">
                   {ex.word}

@@ -1,10 +1,18 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { Volume2, RotateCcw, ChevronRight, Trophy } from "lucide-react";
-import { DICTATION_ITEMS, type DictationItem, type DictationDifficulty, type DictationMode } from "../constants/hindi";
-import { usePronounce } from "../hooks/usePronounce";
 import { Progress } from "@/components/ui/progress";
+import { ChevronRight, RotateCcw, Trophy, Volume2 } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  DICTATION_ITEMS,
+  type DictationDifficulty,
+  type DictationItem,
+  type DictationMode,
+} from "../constants/hindi";
+import { usePronounce } from "../hooks/usePronounce";
 
-type Diff = { char: string; status: "correct" | "wrong" | "missing" | "extra" }[];
+type Diff = {
+  char: string;
+  status: "correct" | "wrong" | "missing" | "extra";
+}[];
 
 function computeDiff(expected: string, actual: string): Diff {
   // Simple character-level diff
@@ -62,7 +70,9 @@ function shuffle<T>(arr: T[]): T[] {
 export function DictationPage() {
   const { speak } = usePronounce();
   const [mode, setMode] = useState<DictationMode>("word");
-  const [difficulty, setDifficulty] = useState<DictationDifficulty | "all">("all");
+  const [difficulty, setDifficulty] = useState<DictationDifficulty | "all">(
+    "all",
+  );
   const [speed, setSpeed] = useState(0.75);
   const [questions, setQuestions] = useState<DictationItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -82,32 +92,42 @@ export function DictationPage() {
     });
   }, [mode, difficulty]);
 
-  const playWord = useCallback((text: string, rate: number) => {
-    setIsPlaying(true);
-    speak(text, rate);
-    setTimeout(() => setIsPlaying(false), Math.max(1500, text.length * 200));
-  }, [speak]);
+  const playWord = useCallback(
+    (text: string, rate: number) => {
+      setIsPlaying(true);
+      speak(text, rate);
+      setTimeout(() => setIsPlaying(false), Math.max(1500, text.length * 200));
+    },
+    [speak],
+  );
 
-  const startSession = useCallback((items: DictationItem[]) => {
-    const shuffled = shuffle(items);
-    setQuestions(shuffled);
-    setCurrentIndex(0);
-    setUserInput("");
-    setChecked(false);
-    setDiff([]);
-    setScore(0);
-    setFinished(false);
-    if (shuffled.length > 0) {
-      setTimeout(() => playWord(shuffled[0].text, speed), 400);
-    }
-  }, [playWord, speed]);
+  const startSession = useCallback(
+    (items: DictationItem[]) => {
+      const shuffled = shuffle(items);
+      setQuestions(shuffled);
+      setCurrentIndex(0);
+      setUserInput("");
+      setChecked(false);
+      setDiff([]);
+      setScore(0);
+      setFinished(false);
+      if (shuffled.length > 0) {
+        setTimeout(() => playWord(shuffled[0].text, speed), 400);
+      }
+    },
+    [playWord, speed],
+  );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: startSession is stable within the session lifecycle
   useEffect(() => {
     startSession(filteredItems);
-  }, [filteredItems]); // startSession is stable within the session lifecycle
+  }, [filteredItems]);
 
   const currentItem = questions[currentIndex] ?? null;
-  const progress = questions.length > 0 ? ((currentIndex + (checked ? 1 : 0)) / questions.length) * 100 : 0;
+  const progress =
+    questions.length > 0
+      ? ((currentIndex + (checked ? 1 : 0)) / questions.length) * 100
+      : 0;
 
   const handleSpeak = () => {
     if (currentItem) playWord(currentItem.text, speed);
@@ -149,11 +169,14 @@ export function DictationPage() {
 
   // Summary screen
   if (finished) {
-    const pct = questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
+    const pct =
+      questions.length > 0 ? Math.round((score / questions.length) * 100) : 0;
     return (
       <div className="min-h-screen pb-24 flex flex-col">
         <div className="px-5 pt-8 pb-4">
-          <h1 className="font-display text-2xl text-foreground mb-1">Dictation</h1>
+          <h1 className="font-display text-2xl text-foreground mb-1">
+            Dictation
+          </h1>
           <p className="text-sm text-muted-foreground">श्रुतलेख</p>
         </div>
         <div className="flex-1 flex flex-col items-center justify-center px-5 gap-6">
@@ -162,15 +185,25 @@ export function DictationPage() {
           </div>
           <div className="text-center">
             <p className="text-4xl font-bold text-foreground mb-1">
-              {score} <span className="text-muted-foreground text-2xl">/ {questions.length}</span>
+              {score}{" "}
+              <span className="text-muted-foreground text-2xl">
+                / {questions.length}
+              </span>
             </p>
             <p className="text-lg font-semibold text-primary">{pct}% correct</p>
             <p className="text-sm text-muted-foreground mt-2">
-              {pct >= 80 ? "Excellent! Keep it up." : pct >= 50 ? "Good effort! Practice more." : "Keep going — practice makes perfect!"}
+              {pct >= 80
+                ? "Excellent! Keep it up."
+                : pct >= 50
+                  ? "Good effort! Practice more."
+                  : "Keep going — practice makes perfect!"}
             </p>
           </div>
           <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-            <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
+            <div
+              className="h-full bg-primary rounded-full transition-all duration-700"
+              style={{ width: `${pct}%` }}
+            />
           </div>
           <button
             type="button"
@@ -185,7 +218,8 @@ export function DictationPage() {
     );
   }
 
-  const correct = checked && currentItem ? isCorrect(currentItem.text, userInput) : null;
+  const correct =
+    checked && currentItem ? isCorrect(currentItem.text, userInput) : null;
 
   return (
     <div className="min-h-screen pb-28 flex flex-col">
@@ -193,12 +227,18 @@ export function DictationPage() {
       <div className="px-5 pt-8 pb-3">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="font-display text-2xl text-foreground mb-0.5">Dictation</h1>
+            <h1 className="font-display text-2xl text-foreground mb-0.5">
+              Dictation
+            </h1>
             <p className="text-xs text-muted-foreground">श्रुतलेख</p>
           </div>
           <div className="text-right">
             <p className="text-lg font-bold text-foreground">
-              {score}<span className="text-muted-foreground font-normal text-sm"> / {questions.length}</span>
+              {score}
+              <span className="text-muted-foreground font-normal text-sm">
+                {" "}
+                / {questions.length}
+              </span>
             </p>
             <p className="text-[10px] text-muted-foreground">correct</p>
           </div>
@@ -225,15 +265,18 @@ export function DictationPage() {
       {/* Difficulty filter */}
       <div className="px-5 mb-3">
         <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-1">
-          {(Object.keys(DIFFICULTY_LABELS) as (DictationDifficulty | "all")[]).map((d) => (
+          {(
+            Object.keys(DIFFICULTY_LABELS) as (DictationDifficulty | "all")[]
+          ).map((d) => (
             <button
               key={d}
               type="button"
               onClick={() => setDifficulty(d)}
               className={`shrink-0 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all
-                ${difficulty === d
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
+                ${
+                  difficulty === d
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
                 }`}
             >
               {DIFFICULTY_LABELS[d]}
@@ -246,7 +289,10 @@ export function DictationPage() {
       {questions.length > 0 && (
         <div className="px-5 mb-4">
           <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1.5">
-            <span>Question {Math.min(currentIndex + 1, questions.length)} of {questions.length}</span>
+            <span>
+              Question {Math.min(currentIndex + 1, questions.length)} of{" "}
+              {questions.length}
+            </span>
             <span>{Math.round(progress)}%</span>
           </div>
           <Progress value={progress} className="h-1.5" />
@@ -255,7 +301,9 @@ export function DictationPage() {
 
       {currentItem === null ? (
         <div className="flex-1 flex items-center justify-center px-5">
-          <p className="text-muted-foreground text-sm text-center">No items in this category.</p>
+          <p className="text-muted-foreground text-sm text-center">
+            No items in this category.
+          </p>
         </div>
       ) : (
         <div className="flex-1 flex flex-col px-5 gap-4">
@@ -266,21 +314,32 @@ export function DictationPage() {
               onClick={handleSpeak}
               className={`w-20 h-20 rounded-full flex items-center justify-center
                 transition-all duration-200 active:scale-95
-                ${isPlaying
-                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 scale-105"
-                  : "bg-primary/10 border-2 border-primary/20 hover:bg-primary/20"
+                ${
+                  isPlaying
+                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 scale-105"
+                    : "bg-primary/10 border-2 border-primary/20 hover:bg-primary/20"
                 }`}
               aria-label="Hear word"
             >
-              <Volume2 className={`w-9 h-9 ${isPlaying ? "text-primary-foreground" : "text-primary"} transition-transform ${isPlaying ? "scale-110" : ""}`} />
+              <Volume2
+                className={`w-9 h-9 ${isPlaying ? "text-primary-foreground" : "text-primary"} transition-transform ${isPlaying ? "scale-110" : ""}`}
+              />
             </button>
-            <p className="text-xs text-muted-foreground">Tap to hear {mode === "sentence" ? "sentence" : "word"}</p>
+            <p className="text-xs text-muted-foreground">
+              Tap to hear {mode === "sentence" ? "sentence" : "word"}
+            </p>
 
             {/* Difficulty badge */}
-            <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide
-              ${currentItem.difficulty === "easy" ? "bg-success/10 text-success" :
-                currentItem.difficulty === "medium" ? "bg-accent/10 text-accent" :
-                "bg-destructive/10 text-destructive"}`}>
+            <span
+              className={`px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wide
+              ${
+                currentItem.difficulty === "easy"
+                  ? "bg-success/10 text-success"
+                  : currentItem.difficulty === "medium"
+                    ? "bg-accent/10 text-accent"
+                    : "bg-destructive/10 text-destructive"
+              }`}
+            >
               {currentItem.difficulty}
             </span>
 
@@ -294,7 +353,9 @@ export function DictationPage() {
 
           {/* Speed control */}
           <div className="bg-card border border-border rounded-xl px-4 py-3">
-            <p className="text-[10px] text-muted-foreground mb-2 font-medium uppercase tracking-wide">Playback Speed</p>
+            <p className="text-[10px] text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+              Playback Speed
+            </p>
             <div className="flex gap-1.5 justify-between">
               {SPEED_OPTIONS.map((opt) => (
                 <button
@@ -312,7 +373,10 @@ export function DictationPage() {
 
           {/* Input area */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="dictation-input" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            <label
+              htmlFor="dictation-input"
+              className="text-xs font-semibold text-muted-foreground uppercase tracking-wide"
+            >
               Type what you hear
             </label>
             <textarea
@@ -328,25 +392,34 @@ export function DictationPage() {
                 transition-all duration-200 bg-card outline-none
                 placeholder:text-muted-foreground/40
                 ${checked ? "cursor-not-allowed opacity-80" : "focus:border-primary/60"}
-                ${correct === true ? "border-success/60 bg-success/5" :
-                  correct === false ? "border-destructive/40 bg-destructive/5" :
-                  "border-border"}`}
+                ${
+                  correct === true
+                    ? "border-success/60 bg-success/5"
+                    : correct === false
+                      ? "border-destructive/40 bg-destructive/5"
+                      : "border-border"
+                }`}
             />
           </div>
 
           {/* Diff view */}
           {checked && diff.length > 0 && (
             <div className="animate-scale-in bg-card border border-border rounded-xl px-4 py-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">Review</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                Review
+              </p>
               <div className="flex flex-wrap gap-0.5 font-devanagari text-xl leading-relaxed">
                 {diff.map((d, i) => (
                   <span
                     key={`${d.char}-${d.status}-${i}`}
                     className={
-                      d.status === "correct" ? "text-success" :
-                      d.status === "wrong" ? "text-destructive font-bold underline decoration-destructive/60" :
-                      d.status === "missing" ? "text-amber-600 bg-amber-50 rounded px-0.5" :
-                      "text-muted-foreground line-through"
+                      d.status === "correct"
+                        ? "text-success"
+                        : d.status === "wrong"
+                          ? "text-destructive font-bold underline decoration-destructive/60"
+                          : d.status === "missing"
+                            ? "text-amber-600 bg-amber-50 rounded px-0.5"
+                            : "text-muted-foreground line-through"
                     }
                   >
                     {d.char}
@@ -354,9 +427,15 @@ export function DictationPage() {
                 ))}
               </div>
               <div className="flex gap-3 mt-2 text-[10px]">
-                <span className="text-success flex items-center gap-1">● Correct</span>
-                <span className="text-destructive flex items-center gap-1">● Wrong</span>
-                <span className="text-amber-600 flex items-center gap-1">● Missing</span>
+                <span className="text-success flex items-center gap-1">
+                  ● Correct
+                </span>
+                <span className="text-destructive flex items-center gap-1">
+                  ● Wrong
+                </span>
+                <span className="text-amber-600 flex items-center gap-1">
+                  ● Missing
+                </span>
               </div>
             </div>
           )}
@@ -374,10 +453,16 @@ export function DictationPage() {
             </button>
           ) : (
             <div className="flex flex-col gap-2 animate-scale-in">
-              <div className={`rounded-xl px-4 py-2.5 text-center text-sm font-semibold
-                ${correct ? "bg-success/10 text-success border border-success/20" : "bg-destructive/10 text-destructive border border-destructive/20"}`}>
-                {correct ? "✓ Correct!" : `✗ Expected: `}
-                {!correct && <span className="font-devanagari font-bold">{currentItem.text}</span>}
+              <div
+                className={`rounded-xl px-4 py-2.5 text-center text-sm font-semibold
+                ${correct ? "bg-success/10 text-success border border-success/20" : "bg-destructive/10 text-destructive border border-destructive/20"}`}
+              >
+                {correct ? "✓ Correct!" : "✗ Expected: "}
+                {!correct && (
+                  <span className="font-devanagari font-bold">
+                    {currentItem.text}
+                  </span>
+                )}
               </div>
               <button
                 type="button"

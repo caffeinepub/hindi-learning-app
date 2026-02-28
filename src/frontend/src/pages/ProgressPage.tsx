@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { Flame, BookOpen, Star, RotateCcw, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,15 +9,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useGetProgressSummary, useGetAllLearnedLetters, useResetProgress } from "../hooks/useQueries";
-import { ALL_CHARACTERS, VOWELS, CONSONANTS } from "../constants/hindi";
-import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AlertTriangle, BookOpen, Flame, RotateCcw, Star } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { ALL_CHARACTERS, CONSONANTS, VOWELS } from "../constants/hindi";
+import {
+  useGetAllLearnedLetters,
+  useGetProgressSummary,
+  useResetProgress,
+} from "../hooks/useQueries";
 
 export function ProgressPage() {
   const { data: summary, isLoading: summaryLoading } = useGetProgressSummary();
-  const { data: learnedLetters = [], isLoading: lettersLoading } = useGetAllLearnedLetters();
+  const { data: learnedLetters = [], isLoading: lettersLoading } =
+    useGetAllLearnedLetters();
   const resetProgress = useResetProgress();
   const [resetOpen, setResetOpen] = useState(false);
 
@@ -29,10 +34,13 @@ export function ProgressPage() {
   const totalChars = ALL_CHARACTERS.length;
   const learnedSet = new Set(learnedLetters);
   const learnedCount = learnedSet.size;
-  const progressPct = totalChars > 0 ? Math.round((learnedCount / totalChars) * 100) : 0;
+  const progressPct =
+    totalChars > 0 ? Math.round((learnedCount / totalChars) * 100) : 0;
 
   const vowelsLearned = VOWELS.filter((v) => learnedSet.has(v.char)).length;
-  const consonantsLearned = CONSONANTS.filter((c) => learnedSet.has(c.char)).length;
+  const consonantsLearned = CONSONANTS.filter((c) =>
+    learnedSet.has(c.char),
+  ).length;
 
   const streak = summary ? Number(summary.streak) : 0;
   const avgScore = summary ? Math.round(summary.averageQuizScore) : 0;
@@ -54,7 +62,9 @@ export function ProgressPage() {
       {/* Header */}
       <div className="px-5 pt-8 pb-4">
         <h1 className="font-display text-2xl text-foreground mb-1">Progress</h1>
-        <p className="text-sm text-muted-foreground">Your learning journey at a glance</p>
+        <p className="text-sm text-muted-foreground">
+          Your learning journey at a glance
+        </p>
       </div>
 
       <div className="px-5 space-y-4">
@@ -67,33 +77,45 @@ export function ProgressPage() {
             {isLoading ? (
               <Skeleton className="h-10 w-24" />
             ) : (
-              <span className="font-display text-4xl text-primary">{progressPct}%</span>
+              <span className="font-display text-4xl text-primary">
+                {progressPct}%
+              </span>
             )}
             <span className="text-sm text-muted-foreground mb-1.5">
-              {isLoading ? "..." : `${learnedCount} of ${totalChars} characters`}
+              {isLoading
+                ? "..."
+                : `${learnedCount} of ${totalChars} characters`}
             </span>
           </div>
           <Progress value={progressPct} className="h-3 mb-3" />
           <div className="grid grid-cols-2 gap-3 mt-4">
             <div className="bg-muted/40 rounded-xl p-3">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Vowels</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                Vowels
+              </p>
               {isLoading ? (
                 <Skeleton className="h-6 w-16" />
               ) : (
                 <p className="text-lg font-bold text-foreground">
                   {vowelsLearned}
-                  <span className="text-sm text-muted-foreground font-normal">/{VOWELS.length}</span>
+                  <span className="text-sm text-muted-foreground font-normal">
+                    /{VOWELS.length}
+                  </span>
                 </p>
               )}
             </div>
             <div className="bg-muted/40 rounded-xl p-3">
-              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Consonants</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                Consonants
+              </p>
               {isLoading ? (
                 <Skeleton className="h-6 w-16" />
               ) : (
                 <p className="text-lg font-bold text-foreground">
                   {consonantsLearned}
-                  <span className="text-sm text-muted-foreground font-normal">/{CONSONANTS.length}</span>
+                  <span className="text-sm text-muted-foreground font-normal">
+                    /{CONSONANTS.length}
+                  </span>
                 </p>
               )}
             </div>
@@ -108,7 +130,13 @@ export function ProgressPage() {
             value={isLoading ? null : `${streak} days`}
             colorClass="text-accent"
             bgClass="bg-accent/10"
-            note={streak >= 7 ? "🔥 On fire!" : streak >= 3 ? "Keep going!" : "Start a streak!"}
+            note={
+              streak >= 7
+                ? "🔥 On fire!"
+                : streak >= 3
+                  ? "Keep going!"
+                  : "Start a streak!"
+            }
           />
           <StatBox
             icon={<Star className="w-5 h-5" />}
@@ -116,7 +144,13 @@ export function ProgressPage() {
             value={isLoading ? null : `${avgScore}%`}
             colorClass="text-success"
             bgClass="bg-success/10"
-            note={avgScore >= 80 ? "Excellent" : avgScore >= 60 ? "Good work" : "Practice more"}
+            note={
+              avgScore >= 80
+                ? "Excellent"
+                : avgScore >= 60
+                  ? "Good work"
+                  : "Practice more"
+            }
           />
         </section>
 
@@ -147,11 +181,26 @@ export function ProgressPage() {
             Milestones
           </h2>
           <div className="space-y-2.5">
-            <MilestoneRow label="First character learned" achieved={learnedCount >= 1} />
-            <MilestoneRow label="10 characters learned" achieved={learnedCount >= 10} />
-            <MilestoneRow label="All vowels learned" achieved={vowelsLearned >= VOWELS.length} />
-            <MilestoneRow label="Half the alphabet" achieved={learnedCount >= Math.floor(totalChars / 2)} />
-            <MilestoneRow label="Full alphabet mastered" achieved={learnedCount >= totalChars} />
+            <MilestoneRow
+              label="First character learned"
+              achieved={learnedCount >= 1}
+            />
+            <MilestoneRow
+              label="10 characters learned"
+              achieved={learnedCount >= 10}
+            />
+            <MilestoneRow
+              label="All vowels learned"
+              achieved={vowelsLearned >= VOWELS.length}
+            />
+            <MilestoneRow
+              label="Half the alphabet"
+              achieved={learnedCount >= Math.floor(totalChars / 2)}
+            />
+            <MilestoneRow
+              label="Full alphabet mastered"
+              achieved={learnedCount >= totalChars}
+            />
             <MilestoneRow label="3-day streak" achieved={streak >= 3} />
             <MilestoneRow label="7-day streak" achieved={streak >= 7} />
           </div>
@@ -176,12 +225,14 @@ export function ProgressPage() {
                   Reset Progress?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will permanently delete all your learned characters, quiz scores, and streaks.
-                  This action cannot be undone.
+                  This will permanently delete all your learned characters, quiz
+                  scores, and streaks. This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+                <AlertDialogCancel className="rounded-xl">
+                  Cancel
+                </AlertDialogCancel>
                 <AlertDialogAction
                   onClick={handleReset}
                   className="rounded-xl bg-destructive text-destructive-foreground hover:bg-destructive/90"
@@ -207,17 +258,30 @@ interface StatBoxProps {
   note: string;
 }
 
-function StatBox({ icon, label, value, colorClass, bgClass, note }: StatBoxProps) {
+function StatBox({
+  icon,
+  label,
+  value,
+  colorClass,
+  bgClass,
+  note,
+}: StatBoxProps) {
   return (
     <div className="bg-card border border-border rounded-2xl p-4 shadow-xs">
-      <div className={`w-9 h-9 rounded-xl ${bgClass} ${colorClass} flex items-center justify-center mb-3`}>
+      <div
+        className={`w-9 h-9 rounded-xl ${bgClass} ${colorClass} flex items-center justify-center mb-3`}
+      >
         {icon}
       </div>
-      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">{label}</p>
+      <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+        {label}
+      </p>
       {value === null ? (
         <Skeleton className="h-7 w-20 mb-1" />
       ) : (
-        <p className={`text-2xl font-bold ${colorClass} leading-none mb-1`}>{value}</p>
+        <p className={`text-2xl font-bold ${colorClass} leading-none mb-1`}>
+          {value}
+        </p>
       )}
       <p className="text-xs text-muted-foreground">{note}</p>
     </div>
@@ -231,12 +295,18 @@ interface MilestoneRowProps {
 
 function MilestoneRow({ label, achieved }: MilestoneRowProps) {
   return (
-    <div className={`flex items-center gap-3 p-2.5 rounded-lg transition-colors
-      ${achieved ? "bg-success/8" : "bg-muted/30"}`}>
-      <span className={`text-base ${achieved ? "grayscale-0" : "grayscale opacity-30"}`}>
+    <div
+      className={`flex items-center gap-3 p-2.5 rounded-lg transition-colors
+      ${achieved ? "bg-success/8" : "bg-muted/30"}`}
+    >
+      <span
+        className={`text-base ${achieved ? "grayscale-0" : "grayscale opacity-30"}`}
+      >
         {achieved ? "✅" : "⭕"}
       </span>
-      <span className={`text-sm ${achieved ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+      <span
+        className={`text-sm ${achieved ? "text-foreground font-medium" : "text-muted-foreground"}`}
+      >
         {label}
       </span>
     </div>

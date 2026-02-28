@@ -10,22 +10,39 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export interface Lesson {
+  'title' : string,
+  'content' : string,
+  'transliteration' : string,
+  'english' : string,
+}
+export interface QuizOption { 'text' : string, 'isCorrect' : boolean }
+export interface QuizQuestion {
+  'topic' : string,
+  'question' : string,
+  'answer' : string,
+  'questionType' : string,
+  'options' : Array<QuizOption>,
+}
+export interface Topic {
+  'name' : string,
+  'description' : string,
+  'lessons' : Array<Lesson>,
+  'quizzes' : Array<QuizQuestion>,
+}
 export interface _SERVICE {
-  'getAllLearnedLetters' : ActorMethod<[], Array<string>>,
-  'getProgressSummary' : ActorMethod<
+  'getLessonsByTopic' : ActorMethod<[string], Array<Lesson>>,
+  'getQuizzesByTopic' : ActorMethod<[string], Array<QuizQuestion>>,
+  'getTopics' : ActorMethod<[], Array<Topic>>,
+  'getUserProgress' : ActorMethod<
     [],
     {
-      'streak' : bigint,
-      'averageQuizScore' : number,
-      'totalLettersLearned' : bigint,
+      'quizScores' : Array<[string, Array<bigint>]>,
+      'completedLessons' : Array<[string, bigint]>,
     }
   >,
-  'getStreak' : ActorMethod<[], bigint>,
-  'isLetterLearned' : ActorMethod<[string], boolean>,
-  'markLetterLearned' : ActorMethod<[string], undefined>,
-  'recordQuizScore' : ActorMethod<[bigint, bigint], undefined>,
-  'resetProgress' : ActorMethod<[], undefined>,
-  'updateStreak' : ActorMethod<[], undefined>,
+  'markLessonCompleted' : ActorMethod<[string, bigint], undefined>,
+  'submitQuizAnswers' : ActorMethod<[string, bigint, bigint], undefined>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

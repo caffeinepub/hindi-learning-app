@@ -8,49 +8,96 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const Lesson = IDL.Record({
+  'title' : IDL.Text,
+  'content' : IDL.Text,
+  'transliteration' : IDL.Text,
+  'english' : IDL.Text,
+});
+export const QuizOption = IDL.Record({
+  'text' : IDL.Text,
+  'isCorrect' : IDL.Bool,
+});
+export const QuizQuestion = IDL.Record({
+  'topic' : IDL.Text,
+  'question' : IDL.Text,
+  'answer' : IDL.Text,
+  'questionType' : IDL.Text,
+  'options' : IDL.Vec(QuizOption),
+});
+export const Topic = IDL.Record({
+  'name' : IDL.Text,
+  'description' : IDL.Text,
+  'lessons' : IDL.Vec(Lesson),
+  'quizzes' : IDL.Vec(QuizQuestion),
+});
+
 export const idlService = IDL.Service({
-  'getAllLearnedLetters' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
-  'getProgressSummary' : IDL.Func(
+  'getLessonsByTopic' : IDL.Func([IDL.Text], [IDL.Vec(Lesson)], ['query']),
+  'getQuizzesByTopic' : IDL.Func(
+      [IDL.Text],
+      [IDL.Vec(QuizQuestion)],
+      ['query'],
+    ),
+  'getTopics' : IDL.Func([], [IDL.Vec(Topic)], ['query']),
+  'getUserProgress' : IDL.Func(
       [],
       [
         IDL.Record({
-          'streak' : IDL.Nat,
-          'averageQuizScore' : IDL.Float64,
-          'totalLettersLearned' : IDL.Nat,
+          'quizScores' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Nat))),
+          'completedLessons' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)),
         }),
       ],
       ['query'],
     ),
-  'getStreak' : IDL.Func([], [IDL.Nat], ['query']),
-  'isLetterLearned' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
-  'markLetterLearned' : IDL.Func([IDL.Text], [], []),
-  'recordQuizScore' : IDL.Func([IDL.Nat, IDL.Nat], [], []),
-  'resetProgress' : IDL.Func([], [], []),
-  'updateStreak' : IDL.Func([], [], []),
+  'markLessonCompleted' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+  'submitQuizAnswers' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [], []),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const Lesson = IDL.Record({
+    'title' : IDL.Text,
+    'content' : IDL.Text,
+    'transliteration' : IDL.Text,
+    'english' : IDL.Text,
+  });
+  const QuizOption = IDL.Record({ 'text' : IDL.Text, 'isCorrect' : IDL.Bool });
+  const QuizQuestion = IDL.Record({
+    'topic' : IDL.Text,
+    'question' : IDL.Text,
+    'answer' : IDL.Text,
+    'questionType' : IDL.Text,
+    'options' : IDL.Vec(QuizOption),
+  });
+  const Topic = IDL.Record({
+    'name' : IDL.Text,
+    'description' : IDL.Text,
+    'lessons' : IDL.Vec(Lesson),
+    'quizzes' : IDL.Vec(QuizQuestion),
+  });
+  
   return IDL.Service({
-    'getAllLearnedLetters' : IDL.Func([], [IDL.Vec(IDL.Text)], ['query']),
-    'getProgressSummary' : IDL.Func(
+    'getLessonsByTopic' : IDL.Func([IDL.Text], [IDL.Vec(Lesson)], ['query']),
+    'getQuizzesByTopic' : IDL.Func(
+        [IDL.Text],
+        [IDL.Vec(QuizQuestion)],
+        ['query'],
+      ),
+    'getTopics' : IDL.Func([], [IDL.Vec(Topic)], ['query']),
+    'getUserProgress' : IDL.Func(
         [],
         [
           IDL.Record({
-            'streak' : IDL.Nat,
-            'averageQuizScore' : IDL.Float64,
-            'totalLettersLearned' : IDL.Nat,
+            'quizScores' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Nat))),
+            'completedLessons' : IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat)),
           }),
         ],
         ['query'],
       ),
-    'getStreak' : IDL.Func([], [IDL.Nat], ['query']),
-    'isLetterLearned' : IDL.Func([IDL.Text], [IDL.Bool], ['query']),
-    'markLetterLearned' : IDL.Func([IDL.Text], [], []),
-    'recordQuizScore' : IDL.Func([IDL.Nat, IDL.Nat], [], []),
-    'resetProgress' : IDL.Func([], [], []),
-    'updateStreak' : IDL.Func([], [], []),
+    'markLessonCompleted' : IDL.Func([IDL.Text, IDL.Nat], [], []),
+    'submitQuizAnswers' : IDL.Func([IDL.Text, IDL.Nat, IDL.Nat], [], []),
   });
 };
 

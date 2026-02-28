@@ -1,6 +1,10 @@
+import { Info, Volume2, X } from "lucide-react";
 import { useState } from "react";
-import { Volume2, Info, X } from "lucide-react";
-import { KHADI_CONSONANTS, MATRAS, SYLLABLE_EXAMPLES } from "../constants/hindi";
+import {
+  KHADI_CONSONANTS,
+  MATRAS,
+  SYLLABLE_EXAMPLES,
+} from "../constants/hindi";
 import { usePronounce } from "../hooks/usePronounce";
 
 export function KhadiPage() {
@@ -46,7 +50,8 @@ export function KhadiPage() {
       <div className="mx-5 mb-4 bg-accent/8 border border-accent/20 rounded-xl p-3 flex gap-2.5">
         <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Tap any syllable cell to hear pronunciation and see examples. Scroll horizontally to see all vowel combinations.
+          Tap any syllable cell to hear pronunciation and see examples. Scroll
+          horizontally to see all vowel combinations.
         </p>
       </div>
 
@@ -60,8 +65,12 @@ export function KhadiPage() {
             key={m.vowel}
             className="shrink-0 flex flex-col items-center min-w-[48px]"
           >
-            <span className="font-devanagari text-sm font-bold text-accent">{m.vowel}</span>
-            <span className="text-[9px] text-muted-foreground">{m.transliteration}</span>
+            <span className="font-devanagari text-sm font-bold text-accent">
+              {m.vowel}
+            </span>
+            <span className="text-[9px] text-muted-foreground">
+              {m.transliteration}
+            </span>
           </div>
         ))}
       </div>
@@ -73,7 +82,9 @@ export function KhadiPage() {
           <div className="flex sticky top-0 z-30 bg-muted shadow-sm">
             {/* Corner cell */}
             <div className="sticky left-0 z-40 bg-muted min-w-[48px] h-10 flex items-center justify-center border-b border-r-2 border-border">
-              <span className="font-devanagari text-xs font-bold text-muted-foreground">व्यंजन</span>
+              <span className="font-devanagari text-xs font-bold text-muted-foreground">
+                व्यंजन
+              </span>
             </div>
             {/* Vowel headers */}
             {MATRAS.map((m) => (
@@ -81,8 +92,12 @@ export function KhadiPage() {
                 key={`header-${m.vowel}`}
                 className="flex flex-col items-center justify-center min-w-[48px] h-10 bg-primary/8 border-b border-r border-border/60"
               >
-                <span className="font-devanagari text-xs font-bold text-primary">{m.vowel}</span>
-                <span className="text-[8px] text-muted-foreground">{m.transliteration}</span>
+                <span className="font-devanagari text-xs font-bold text-primary">
+                  {m.vowel}
+                </span>
+                <span className="text-[8px] text-muted-foreground">
+                  {m.transliteration}
+                </span>
               </div>
             ))}
           </div>
@@ -166,9 +181,10 @@ function SyllableCell({
         border-b border-r border-border/40
         min-w-[48px] h-10
         transition-all duration-200 select-none
-        ${isActive || isSelected
-          ? "bg-primary text-primary-foreground scale-95"
-          : "text-foreground bg-card hover:bg-primary/8 hover:text-primary"
+        ${
+          isActive || isSelected
+            ? "bg-primary text-primary-foreground scale-95"
+            : "text-foreground bg-card hover:bg-primary/8 hover:text-primary"
         }
       `}
       aria-label={`Pronounce ${syllable}`}
@@ -178,16 +194,19 @@ function SyllableCell({
   );
 }
 
-function SyllablePanel({ syllable, onClose }: { syllable: string; onClose: () => void }) {
+function SyllablePanel({
+  syllable,
+  onClose,
+}: { syllable: string; onClose: () => void }) {
   const { speak } = usePronounce();
   const examples = SYLLABLE_EXAMPLES[syllable] ?? [];
 
   return (
-    <div
-      className="fixed bottom-[72px] left-0 right-0 z-50 flex justify-center px-4"
-    >
-      <div className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-xl p-4
-        animate-slide-up overflow-hidden">
+    <div className="fixed bottom-[72px] left-0 right-0 z-50 flex justify-center px-4">
+      <div
+        className="w-full max-w-lg bg-card border border-border rounded-2xl shadow-xl p-4
+        animate-slide-up overflow-hidden"
+      >
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">

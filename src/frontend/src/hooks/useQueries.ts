@@ -1,40 +1,40 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useActor } from "./useActor";
 
-// ---- Query: Get all learned letters ----
-export function useGetAllLearnedLetters() {
-  const { actor, isFetching } = useActor();
-  return useQuery<string[]>({
-    queryKey: ["learnedLetters"],
-    queryFn: async () => {
-      if (!actor) return [];
-      return actor.getAllLearnedLetters();
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-// ---- Query: Progress summary ----
+// ---- Query: Get progress summary (uses getUserProgress from grammar backend) ----
 export function useGetProgressSummary() {
-  const { actor, isFetching } = useActor();
-  return useQuery<{ streak: bigint; averageQuizScore: number; totalLettersLearned: bigint }>({
+  const { isFetching } = useActor();
+  return useQuery<{
+    streak: bigint;
+    averageQuizScore: number;
+    totalLettersLearned: bigint;
+  }>({
     queryKey: ["progressSummary"],
     queryFn: async () => {
-      if (!actor) return { streak: 0n, averageQuizScore: 0, totalLettersLearned: 0n };
-      return actor.getProgressSummary();
+      // Grammar backend doesn't have a progress summary endpoint
+      // Return defaults — the old alphabet progress is gone
+      return { streak: 0n, averageQuizScore: 0, totalLettersLearned: 0n };
     },
-    enabled: !!actor && !isFetching,
+    enabled: !isFetching,
+    staleTime: 1000 * 60 * 5,
   });
 }
 
-// ---- Mutation: Mark letter learned ----
+// ---- Query: Get all learned letters (not available in grammar backend) ----
+export function useGetAllLearnedLetters() {
+  return useQuery<string[]>({
+    queryKey: ["learnedLetters"],
+    queryFn: async () => [],
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+}
+
+// ---- Mutation: Mark letter learned (no-op for grammar backend) ----
 export function useMarkLetterLearned() {
-  const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (letter: string) => {
-      if (!actor) throw new Error("Actor not available");
-      return actor.markLetterLearned(letter);
+    mutationFn: async (_letter: string) => {
+      // No-op — grammar backend doesn't track individual letters
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["learnedLetters"] });
@@ -43,14 +43,12 @@ export function useMarkLetterLearned() {
   });
 }
 
-// ---- Mutation: Record quiz score ----
+// ---- Mutation: Record quiz score (no-op for grammar backend) ----
 export function useRecordQuizScore() {
-  const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ correct, total }: { correct: bigint; total: bigint }) => {
-      if (!actor) throw new Error("Actor not available");
-      return actor.recordQuizScore(correct, total);
+    mutationFn: async (_params: { correct: bigint; total: bigint }) => {
+      // No-op — use useSubmitGrammarQuiz for grammar quizzes
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["progressSummary"] });
@@ -58,14 +56,12 @@ export function useRecordQuizScore() {
   });
 }
 
-// ---- Mutation: Update streak ----
+// ---- Mutation: Update streak (no-op for grammar backend) ----
 export function useUpdateStreak() {
-  const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      if (!actor) throw new Error("Actor not available");
-      return actor.updateStreak();
+      // No-op — grammar backend doesn't track streaks
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["progressSummary"] });
@@ -73,14 +69,12 @@ export function useUpdateStreak() {
   });
 }
 
-// ---- Mutation: Reset progress ----
+// ---- Mutation: Reset progress (no-op for grammar backend) ----
 export function useResetProgress() {
-  const { actor } = useActor();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      if (!actor) throw new Error("Actor not available");
-      return actor.resetProgress();
+      // No-op — grammar backend doesn't support reset
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["learnedLetters"] });
