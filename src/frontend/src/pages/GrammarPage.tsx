@@ -1,6 +1,8 @@
-import { BarChart2, BookOpen, Home } from "lucide-react";
+import { BarChart2, BookOpen, Dumbbell, Home, Search } from "lucide-react";
 import { useState } from "react";
 import { GrammarHomePage } from "./GrammarHomePage";
+import { GrammarIdentifyPage } from "./GrammarIdentifyPage";
+import { GrammarPracticePage } from "./GrammarPracticePage";
 import { GrammarProgressPage } from "./GrammarProgressPage";
 import { GrammarQuizPage } from "./GrammarQuizPage";
 import { GrammarTopicPage } from "./GrammarTopicPage";
@@ -9,9 +11,11 @@ type GrammarView =
   | { type: "home" }
   | { type: "topic"; topicId: string }
   | { type: "quiz"; topicId: string }
-  | { type: "progress" };
+  | { type: "progress" }
+  | { type: "identify" }
+  | { type: "practice" };
 
-type GrammarTab = "home" | "progress";
+type GrammarTab = "home" | "progress" | "identify" | "practice";
 
 export function GrammarPage() {
   const [view, setView] = useState<GrammarView>({ type: "home" });
@@ -33,6 +37,16 @@ export function GrammarPage() {
   function navigateProgress() {
     setView({ type: "progress" });
     setActiveTab("progress");
+  }
+
+  function navigateToIdentify() {
+    setView({ type: "identify" });
+    setActiveTab("identify");
+  }
+
+  function navigateToPractice() {
+    setView({ type: "practice" });
+    setActiveTab("practice");
   }
 
   function renderView() {
@@ -57,11 +71,19 @@ export function GrammarPage() {
         );
       case "progress":
         return <GrammarProgressPage onSelectTopic={navigateToTopic} />;
+      case "identify":
+        return <GrammarIdentifyPage onBack={navigateHome} />;
+      case "practice":
+        return <GrammarPracticePage onBack={navigateHome} />;
     }
   }
 
   // Hide inner tab bar when inside topic/quiz views
-  const showInnerTabs = view.type === "home" || view.type === "progress";
+  const showInnerTabs =
+    view.type === "home" ||
+    view.type === "progress" ||
+    view.type === "identify" ||
+    view.type === "practice";
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -92,6 +114,18 @@ export function GrammarPage() {
                 label="Progress"
                 isActive={activeTab === "progress"}
                 onClick={navigateProgress}
+              />
+              <GrammarTabButton
+                icon={<Search className="w-4 h-4" />}
+                label="Identify"
+                isActive={activeTab === "identify" || view.type === "identify"}
+                onClick={navigateToIdentify}
+              />
+              <GrammarTabButton
+                icon={<Dumbbell className="w-4 h-4" />}
+                label="Practice"
+                isActive={activeTab === "practice" || view.type === "practice"}
+                onClick={navigateToPractice}
               />
             </div>
           </div>

@@ -5,10 +5,10 @@ import Nat "mo:core/Nat";
 import Principal "mo:core/Principal";
 import Iter "mo:core/Iter";
 import Runtime "mo:core/Runtime";
-import Migration "migration";
+
 import Order "mo:core/Order";
 
-(with migration = Migration.run)
+
 actor {
   type Lesson = {
     title : Text;
