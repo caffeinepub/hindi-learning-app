@@ -281,7 +281,7 @@ function HalfLetterGrid({ isLoading }: HalfLetterGridProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3">
         {HALF_CONSONANTS.map((item, i) => (
           <HalfLetterCard key={item.full} item={item} animIndex={i} />
         ))}
@@ -300,33 +300,60 @@ function HalfLetterCard({ item, animIndex }: HalfLetterCardProps) {
   const [showMore, setShowMore] = useState(false);
   const hasMore = item.examples && item.examples.length > 0;
 
+  // Derive full transliteration (consonant + a) from half transliteration
+  const fullTranslit = `${item.transliteration}a`;
+  const halfTranslit = item.transliteration;
+
   return (
     <div
-      className="relative rounded-2xl border border-border bg-card p-3 flex flex-col gap-2
+      className="relative rounded-2xl border border-border bg-card p-3 flex flex-col gap-2.5
         shadow-xs hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-300
         animate-scale-in overflow-hidden"
       style={{ animationDelay: `${delay}s`, animationFillMode: "both" }}
     >
-      {/* Formation row: full + virama = half */}
-      <div className="flex items-center justify-center gap-1.5 bg-muted/50 rounded-lg py-2 px-1">
-        <div className="flex flex-col items-center">
-          <span className="font-devanagari text-2xl font-bold text-primary leading-none">{item.full}</span>
-          <span className="text-[9px] text-muted-foreground mt-0.5">full</span>
+      {/* Side-by-side practice boxes */}
+      <div className="grid grid-cols-2 gap-2">
+        {/* Full consonant box */}
+        <div className="relative flex flex-col items-center gap-1.5 bg-primary/8 border border-primary/20 rounded-xl py-3 px-2">
+          <div className="absolute top-1.5 right-1.5">
+            <SpeakButton text={item.full} />
+          </div>
+          <span className="font-devanagari text-4xl font-bold text-primary leading-none mt-1 select-none">
+            {item.full}
+          </span>
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[10px] font-semibold text-primary/80 uppercase tracking-wider">Full</span>
+            <span className="text-[9px] text-muted-foreground font-mono">{fullTranslit}</span>
+          </div>
         </div>
-        <span className="text-muted-foreground/60 text-xs">+</span>
-        <div className="flex flex-col items-center">
-          <span className="font-devanagari text-2xl font-bold text-accent leading-none">्</span>
-          <span className="text-[9px] text-muted-foreground mt-0.5">virama</span>
-        </div>
-        <ArrowRight className="w-3 h-3 text-muted-foreground/60 shrink-0" />
-        <div className="flex flex-col items-center">
-          <span className="font-devanagari text-2xl font-bold text-foreground leading-none">{item.half}</span>
-          <span className="text-[9px] text-muted-foreground mt-0.5">half</span>
+
+        {/* Half consonant box */}
+        <div className="relative flex flex-col items-center gap-1.5 bg-accent/8 border border-accent/20 rounded-xl py-3 px-2">
+          <div className="absolute top-1.5 right-1.5">
+            <SpeakButton text={item.full} />
+          </div>
+          <span className="font-devanagari text-4xl font-bold text-accent leading-none mt-1 select-none">
+            {item.half}
+          </span>
+          <div className="flex flex-col items-center gap-0.5">
+            <span className="text-[10px] font-semibold text-accent/80 uppercase tracking-wider">Half</span>
+            <span className="text-[9px] text-muted-foreground font-mono">{halfTranslit}</span>
+          </div>
         </div>
       </div>
 
+      {/* Virama formula — small info line */}
+      <div className="flex items-center justify-center gap-1 bg-muted/40 rounded-lg py-1 px-2">
+        <span className="font-devanagari text-sm text-primary font-semibold">{item.full}</span>
+        <span className="text-muted-foreground/50 text-[10px]">+</span>
+        <span className="font-devanagari text-sm text-accent font-semibold">्</span>
+        <ArrowRight className="w-2.5 h-2.5 text-muted-foreground/50 shrink-0" />
+        <span className="font-devanagari text-sm text-foreground font-semibold">{item.half}</span>
+        <span className="text-[9px] text-muted-foreground ml-0.5">(virama)</span>
+      </div>
+
       {/* Example word */}
-      <div className="flex items-center justify-between px-1">
+      <div className="flex items-center justify-between px-0.5">
         <div>
           <p className="font-devanagari text-base font-semibold text-foreground leading-none">{item.example}</p>
           <p className="text-[10px] text-muted-foreground mt-0.5">{item.exampleMeaning}</p>
@@ -340,7 +367,7 @@ function HalfLetterCard({ item, animIndex }: HalfLetterCardProps) {
           type="button"
           onClick={() => setShowMore((v) => !v)}
           className="flex items-center gap-1 text-[10px] font-medium
-            text-muted-foreground hover:text-primary transition-colors px-1"
+            text-muted-foreground hover:text-primary transition-colors px-0.5"
         >
           More examples
           {showMore ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
@@ -349,7 +376,7 @@ function HalfLetterCard({ item, animIndex }: HalfLetterCardProps) {
 
       {/* More examples list */}
       {hasMore && showMore && (
-        <div className="border-t border-border/50 pt-2 space-y-1.5 px-1">
+        <div className="border-t border-border/50 pt-2 space-y-1.5 px-0.5">
           {item.examples!.map((ex) => (
             <div key={ex.word} className="flex items-center justify-between gap-1">
               <div className="flex-1 min-w-0">

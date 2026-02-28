@@ -595,6 +595,74 @@ export const SYLLABLE_EXAMPLES: Record<string, { word: string; transliteration: 
   "घो": [{ word: "घोड़ा", transliteration: "ghoda", meaning: "horse" }],
 };
 
+// ─── Dictation App data ───────────────────────────────────────────────
+export type DictationDifficulty = "easy" | "medium" | "hard";
+export type DictationMode = "word" | "sentence";
+
+export interface DictationItem {
+  id: string;
+  text: string;          // Devanagari text to type
+  transliteration: string;
+  meaning: string;
+  difficulty: DictationDifficulty;
+  mode: DictationMode;
+}
+
+export const DICTATION_ITEMS: DictationItem[] = [
+  // ── Easy words ──
+  { id: "w1",  text: "घर",      transliteration: "ghar",      meaning: "home",      difficulty: "easy", mode: "word" },
+  { id: "w2",  text: "रात",     transliteration: "raat",      meaning: "night",     difficulty: "easy", mode: "word" },
+  { id: "w3",  text: "दिन",     transliteration: "din",       meaning: "day",       difficulty: "easy", mode: "word" },
+  { id: "w4",  text: "माँ",     transliteration: "maa",       meaning: "mother",    difficulty: "easy", mode: "word" },
+  { id: "w5",  text: "भाई",     transliteration: "bhaai",     meaning: "brother",   difficulty: "easy", mode: "word" },
+  { id: "w6",  text: "गाय",     transliteration: "gaay",      meaning: "cow",       difficulty: "easy", mode: "word" },
+  { id: "w7",  text: "आम",      transliteration: "aam",       meaning: "mango",     difficulty: "easy", mode: "word" },
+  { id: "w8",  text: "रोटी",    transliteration: "roti",      meaning: "bread",     difficulty: "easy", mode: "word" },
+  { id: "w9",  text: "बकरी",    transliteration: "bakri",     meaning: "goat",      difficulty: "easy", mode: "word" },
+  { id: "w10", text: "नाम",     transliteration: "naam",      meaning: "name",      difficulty: "easy", mode: "word" },
+
+  // ── Medium words (matra) ──
+  { id: "w11", text: "पानी",    transliteration: "paani",     meaning: "water",     difficulty: "medium", mode: "word" },
+  { id: "w12", text: "किताब",   transliteration: "kitaab",    meaning: "book",      difficulty: "medium", mode: "word" },
+  { id: "w13", text: "फूल",     transliteration: "phool",     meaning: "flower",    difficulty: "medium", mode: "word" },
+  { id: "w14", text: "दूध",     transliteration: "doodh",     meaning: "milk",      difficulty: "medium", mode: "word" },
+  { id: "w15", text: "केला",    transliteration: "kela",      meaning: "banana",    difficulty: "medium", mode: "word" },
+  { id: "w16", text: "गाना",    transliteration: "gaana",     meaning: "song",      difficulty: "medium", mode: "word" },
+  { id: "w17", text: "सेब",     transliteration: "seb",       meaning: "apple",     difficulty: "medium", mode: "word" },
+  { id: "w18", text: "नमस्ते",  transliteration: "namaste",   meaning: "hello",     difficulty: "medium", mode: "word" },
+  { id: "w19", text: "बाजार",   transliteration: "baazaar",   meaning: "market",    difficulty: "medium", mode: "word" },
+  { id: "w20", text: "जानवर",   transliteration: "jaanvar",   meaning: "animal",    difficulty: "medium", mode: "word" },
+
+  // ── Hard words (half/conjunct) ──
+  { id: "w21", text: "स्कूल",   transliteration: "skool",     meaning: "school",    difficulty: "hard", mode: "word" },
+  { id: "w22", text: "प्रेम",   transliteration: "prem",      meaning: "love",      difficulty: "hard", mode: "word" },
+  { id: "w23", text: "ज्ञान",   transliteration: "gyaan",     meaning: "knowledge", difficulty: "hard", mode: "word" },
+  { id: "w24", text: "व्यापार", transliteration: "vyaapaar",  meaning: "business",  difficulty: "hard", mode: "word" },
+  { id: "w25", text: "ध्यान",   transliteration: "dhyaan",    meaning: "attention", difficulty: "hard", mode: "word" },
+  { id: "w26", text: "क्षमा",   transliteration: "kshama",    meaning: "forgiveness", difficulty: "hard", mode: "word" },
+  { id: "w27", text: "श्रम",    transliteration: "shram",     meaning: "effort",    difficulty: "hard", mode: "word" },
+  { id: "w28", text: "भ्रमण",   transliteration: "bhraman",   meaning: "travel",    difficulty: "hard", mode: "word" },
+  { id: "w29", text: "स्वास्थ्य", transliteration: "svaasthy", meaning: "health",   difficulty: "hard", mode: "word" },
+  { id: "w30", text: "प्रकाश",  transliteration: "prakaash",  meaning: "light",     difficulty: "hard", mode: "word" },
+
+  // ── Easy sentences ──
+  { id: "s1", text: "मेरा नाम राम है।",         transliteration: "Mera naam Ram hai.", meaning: "My name is Ram.", difficulty: "easy", mode: "sentence" },
+  { id: "s2", text: "यह मेरा घर है।",           transliteration: "Yeh mera ghar hai.", meaning: "This is my home.", difficulty: "easy", mode: "sentence" },
+  { id: "s3", text: "माँ खाना बना रही है।",     transliteration: "Maa khaana bana rahi hai.", meaning: "Mom is cooking food.", difficulty: "easy", mode: "sentence" },
+  { id: "s4", text: "बच्चे खेल रहे हैं।",       transliteration: "Bachche khel rahe hain.", meaning: "Children are playing.", difficulty: "easy", mode: "sentence" },
+
+  // ── Medium sentences ──
+  { id: "s5", text: "आज मौसम बहुत अच्छा है।",  transliteration: "Aaj mausam bahut achha hai.", meaning: "Today the weather is very good.", difficulty: "medium", mode: "sentence" },
+  { id: "s6", text: "मुझे हिंदी पढ़ना पसंद है।", transliteration: "Mujhe Hindi padhna pasand hai.", meaning: "I like reading Hindi.", difficulty: "medium", mode: "sentence" },
+  { id: "s7", text: "बाजार में बहुत भीड़ है।",  transliteration: "Baazaar mein bahut bheed hai.", meaning: "There are many people in the market.", difficulty: "medium", mode: "sentence" },
+  { id: "s8", text: "पानी पीना सेहत के लिए अच्छा है।", transliteration: "Paani peena sehat ke liye achha hai.", meaning: "Drinking water is good for health.", difficulty: "medium", mode: "sentence" },
+
+  // ── Hard sentences ──
+  { id: "s9",  text: "ज्ञान ही सबसे बड़ी शक्ति है।",     transliteration: "Gyaan hi sabse badi shakti hai.", meaning: "Knowledge is the greatest power.", difficulty: "hard", mode: "sentence" },
+  { id: "s10", text: "व्यायाम से स्वास्थ्य अच्छा रहता है।", transliteration: "Vyaayaam se svaasthy achha rahta hai.", meaning: "Exercise keeps health good.", difficulty: "hard", mode: "sentence" },
+  { id: "s11", text: "प्रत्येक व्यक्ति को श्रम करना चाहिए।", transliteration: "Pratyek vyakti ko shram karna chahiye.", meaning: "Every person should work hard.", difficulty: "hard", mode: "sentence" },
+];
+
 // Dictation quiz words
 export interface DictationWord {
   word: string;
